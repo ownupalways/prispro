@@ -1,26 +1,46 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --background: #faf8fc;           /* body: white blended with a hint of purple */
+  --surface: #f1eaf9;              /* cards and panels on the body */
+  --foreground: #4c1d95;           /* body text: purple */
+  --muted: #6b5b84;                /* softer text */
+  --primary: rgb(124, 59, 237);              /* buttons and highlights */
+  --primary-foreground: #ffffff;
+  --border: #e2d6f1;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --chrome: #6d28d9;               /* navbar and footer background: purple */
+  --chrome-foreground: #ffffff;    /* text on the navbar and footer */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0d0b10;         /* body: professional black */
+    --surface: #17131d;
+    --foreground: #f5f3f8;         /* body text: white */
+    --muted: #a99fbb;
+    --border: #2a2335;
+
+    --chrome: #4c1d95;             /* deeper purple so it isn't glaring on black */
   }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-border: var(--border);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-chrome: var(--chrome);
+  --color-chrome-foreground: var(--chrome-foreground);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, sans-serif;
 }
