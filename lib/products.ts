@@ -13,7 +13,7 @@ const products: Product[] = [
 		id: "linen-wrap-dress",
 		name: "Linen Wrap Dress",
 		category: "Women",
-		price: 89,
+		price: 8900,
 		image:
 			"https://picsum.photos/seed/dress-1/600/800",
 		featured: true,
@@ -22,7 +22,7 @@ const products: Product[] = [
 		id: "classic-oxford-shirt",
 		name: "Classic-Oxford-Shirt",
 		category: "Men",
-		price: 40,
+		price: 40000,
 		image:
 			"https://picsum.photos/seed/shirt-2/600/800",
 		featured: true,
@@ -31,7 +31,7 @@ const products: Product[] = [
 		id: "leather-tote-bag",
 		name: "Leather-Tote-Bag",
 		category: "Children",
-		price: 25,
+		price: 25000,
 		image:
 			"https://picsum.photos/seed/bag-3/600/800",
 		featured: true,
@@ -40,7 +40,7 @@ const products: Product[] = [
 		id: "pleated-midi-skirt",
 		name: "Pleated-Midi-Skirt",
 		category: "Women",
-		price: 59,
+		price: 56451,
 		image:
 			"https://picsum.photos/seed/skirt-4/600/800",
 		featured: true,
@@ -58,10 +58,10 @@ const products: Product[] = [
 		id: "silk-scarf",
 		name: "Silk-Scarf",
 		category: "Children",
-		price: 82,
+		price: 28325,
 		image:
 			"https://picsum.photos/seed/scarf-6/600/800",
-		featured: true,
+		featured: false,
 	},
 ];
 
