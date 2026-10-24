@@ -24,11 +24,11 @@ export default function CategoryCard({
 				src={image}
 				alt={name}
 				fill
-				sizes="(min=width: 1024px) 33w, (min-width: 640px) 50vw, 100vw"
+				sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
 				className="object-cover transition-transform duration-500 group-hover:scale-105"
 			/>
 			{/* <div className="absolute inset-0" /> */}
-			<div className="absolute inset-x-0 bottom-0 p-6 bg-linear-to-t from-chrome/70 via-chrom/20 to-transparent">
+			<div className="absolute inset-x-0 bottom-0 p-6 bg-linear-to-t from-chrome/70 via-chrome/20 to-transparent">
 				<h3 className="text-2xl font-bold">
 					{name}
 				</h3>
@@ -38,7 +38,9 @@ export default function CategoryCard({
 						<p className="mb-3 text-sm opacity-80">
 							{blurb}
 						</p>
-						<p>{description}</p>
+						<p className="line-clamp-3 text-sm opacity-80">
+							{description}
+						</p>
 						<span className="mt-3 inline-block text-sm font-semibold underline underline-offset-4">
 							Shop now
 						</span>

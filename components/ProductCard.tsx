@@ -31,7 +31,7 @@ export default function ProductCard({ product }: { product: Product }) {
                 </p>
             </Link>
 
-            <button className="mt-3 w-full rounded-full bg-primary py-2 5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90">
+            <button className="mt-3 w-full rounded-md bg-primary py-2 5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 cursor-pointer">
                 Add to cart
             </button>
         </article>
