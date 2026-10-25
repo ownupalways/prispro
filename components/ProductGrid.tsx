@@ -26,3 +26,22 @@ export default function ProductGrid({
         </section>
     )
 }
+
+export function ProductGridSkeleton() {
+    return (
+        <div>
+            <div className="shimmer h-5 w-32 rounded" />
+
+            <div className="mt-6 grid gap-10 md:grid-cols-2">
+                <div className="shimmer aspect-3/4 rounded-2xl" />
+
+                <div className="flex flex-col justify-center gap-4">
+                    <div className="shimmer h-3 w-20 rounded" />
+                    <div className="shimmer h-9 w-3/4 rounded" />
+                    <div className="shimmer h-7 w-32 rounded" />
+                    <div className="shimmer h-24 w-full rounded" />
+                </div>
+            </div>
+        </div>
+    );
+}
