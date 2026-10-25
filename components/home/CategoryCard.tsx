@@ -19,7 +19,7 @@ export default function CategoryCard({
 	return (
 		<Link
 			href={href}
-			className="group relative flex aspect-4/5 items-end overflow-hidden rounded-2xl text-primary-foreground">
+			className="group relative flex aspect-3/4 items-end overflow-hidden rounded-2xl text-primary-foreground">
 			<Image
 				src={image}
 				alt={name}

@@ -2,7 +2,8 @@ export type Product = {
     id: string;
     name: string;
     category: "Women" | "Men" | "Children";
-    price: number;
+	price: number;
+	description: string;
     image: string;
     imagePublicId?: string;
     featured: boolean;
@@ -14,6 +15,7 @@ const products: Product[] = [
 		name: "Linen Wrap Dress",
 		category: "Women",
 		price: 8900,
+		description: "A breathable linen wrap dress with a flattering tie waist, made for warm days and easy evenings.",
 		image:
 			"https://picsum.photos/seed/dress-1/600/800",
 		featured: true,
@@ -23,6 +25,7 @@ const products: Product[] = [
 		name: "Classic Oxford Shirt",
 		category: "Men",
 		price: 40000,
+		description: "A crisp cotton Oxford shirt with a tailored fit. Smart on its own, sharp under a jacket.",
 		image:
 			"https://picsum.photos/seed/shirt-2/600/800",
 		featured: true,
@@ -32,6 +35,7 @@ const products: Product[] = [
 		name: "Leather Tote Bag",
 		category: "Children",
 		price: 25000,
+		description: "A roomy tote in soft leather with sturdy handles, sized for everything you carry in a day.",
 		image:
 			"https://picsum.photos/seed/bag-3/500/800",
 		featured: true,
@@ -41,6 +45,7 @@ const products: Product[] = [
 		name: "Pleated Midi Skirt",
 		category: "Women",
 		price: 56451,
+		description: "A flowing pleated midi skirt that moves with you and pairs with almost any top.",
 		image:
 			"https://picsum.photos/seed/skirt-4/600/800",
 		featured: true,
@@ -50,6 +55,7 @@ const products: Product[] = [
 		name: "Tailored Chinos",
 		category: "Men",
 		price: 8000,
+		description: "Slim-cut chinos in a comfortable stretch cotton, polished enough for the office.",
 		image:
 			"https://picsum.photos/seed/chinis-5/600/800",
 		featured: true,
@@ -59,6 +65,7 @@ const products: Product[] = [
 		name: "Silk Scarf",
 		category: "Children",
 		price: 28325,
+		description: "A lightweight silk scarf with a soft drape. Wear it at the neck, in the hair or on a bag.",
 		image:
 			"https://picsum.photos/seed/scarf-6/600/800",
 		featured: true,
@@ -68,6 +75,7 @@ const products: Product[] = [
 		name: "Wide Leg Trouser",
 		category: "Women",
 		price: 52000,
+		description: "High-waisted wide leg trousers with a graceful drape and a relaxed, elegant line.",
 		image:
 			"https://picsum.photos/seed/trousers-7/600/800",
 		featured: false,
@@ -77,6 +85,7 @@ const products: Product[] = [
 		name: "Blause",
 		category: "Women",
 		price: 12000,
+		description: "A soft, easy-fitting blouse with a modern cut that works from desk to dinner.",
 		image:
 			"https://picsum.photos/seed/trousers-8/400/800",
 		featured: false,
@@ -86,6 +95,7 @@ const products: Product[] = [
 		name: "Jacket",
 		category: "Men",
 		price: 35000,
+		description: "A structured jacket that finishes any outfit, with a clean silhouette and a comfortable lining.",
 		image:
 			"https://picsum.photos/seed/jacket-9/400/700",
 		featured: false,
@@ -95,6 +105,7 @@ const products: Product[] = [
 		name: "Senator",
 		category: "Men",
 		price: 45000,
+		description: "A classic senator outfit with clean lines and a distinguished finish for occasions and everyday wear.",
 		image:
 			"https://picsum.photos/seed/suit-10/700/700",
 		featured: false,
@@ -104,6 +115,7 @@ const products: Product[] = [
 		name: "Skirt & Blause",
 		category: "Children",
 		price: 17000,
+		description: "A cheerful matching skirt and blouse set, comfortable enough for school and special enough for parties.",
 		image:
 			"https://picsum.photos/seed/skirt-11/500/800",
 		featured: false,
@@ -113,6 +125,7 @@ const products: Product[] = [
 		name: "Play Dress",
 		category: "Children",
 		price: 12000,
+		description: "A soft, stretchy dress that stays comfortable through every game, climb and spin.",
 		image:
 			"https://picsum.photos/seed/play-dress-12/500/800",
 		featured: false,
@@ -126,4 +139,12 @@ export function getFeaturedProducts() {
 
 export function getProductsByCategory(category: Product["category"]) {
 	return products.filter((product) => product.category === category)
+}
+
+export function getAllProducts() {
+	return products;
+}
+
+export function getProductById(id: string) {
+	return products.find((product) => product.id === id)
 }
