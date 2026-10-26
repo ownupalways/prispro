@@ -1,15 +1,11 @@
-import ProductGrid from "@/components/ProductGrid"
-import { getProductsByCategory } from "@/lib/products";
-
-
-
+import { Suspense } from "react";
+import CategoryProducts from "@/components/CategoryProducts";
+import { ProductGridSkeleton } from "@/components/ProductGrid";
 
 export default function WomenPage() {
-
-    return (
-			<ProductGrid 
-			title= "Women Affairs"
-			products= {getProductsByCategory("Women")}
-			/>
-		);
+  return (
+    <Suspense fallback={<ProductGridSkeleton />}>
+      <CategoryProducts title="Women's Affairs" category="Women" />
+    </Suspense>
+  );
 }
