@@ -5,6 +5,20 @@ import Link from "next/link";
 import { useCart } from "@/components/cart/CartProvider";
 import { getProductById } from "@/lib/products";
 import formatPrice from "@/lib/format";
+import { useHydrated } from "@/lib/use-hydrated";
+
+const MAX_QUANTITY_OPTIONS = 99;
+
+function quantityOptions(stock: number) {
+	const max = Math.max(
+		1,
+		Math.min(stock, MAX_QUANTITY_OPTIONS),
+	);
+	return Array.from(
+		{ length: max },
+		(_, index) => index + 1,
+	);
+}
 
 export default function CartPage() {
 	const {
@@ -12,12 +26,23 @@ export default function CartPage() {
 		removeFromCart,
 		updateQuantity,
 	} = useCart();
+	const hydrated = useHydrated();
+
+	if (!hydrated) {
+		return (
+			<section className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+				<h1 className="text-3xl font-bold">
+					Your Shopping Bag
+				</h1>
+				<div className="shimmer mt-8 h-64 rounded-lg" />
+			</section>
+		);
+	}
 
 	const cartItems = items.flatMap((item) => {
 		const product = getProductById(
 			item.productId,
 		);
-
 		return product ? [{ ...item, product }] : [];
 	});
 
@@ -109,17 +134,8 @@ export default function CartPage() {
 											)
 										}
 										className="rounded-md border border-border bg-background px-3 py-2">
-										{Array.from(
-											{
-												length: Math.max(
-													1,
-													Math.min(
-														product.quantity,
-														99,
-													),
-												),
-											},
-											(_, index) => index + 1,
+										{quantityOptions(
+											product.quantity,
 										).map((qty) => (
 											<option
 												key={qty}
@@ -147,20 +163,17 @@ export default function CartPage() {
 					checkout.
 				</p>
 
-				<button
-					type="button"
-					disabled
-					className="mt-6 cursor-not-allowed rounded-full bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground opacity-50">
-					Checkout — Coming Soon
-				</button>
+				<Link
+					href="/checkout"
+					className="mt-4 block w-full rounded-md bg-primary px-5 py-3 text-center font-medium text-primary-foreground hover:opacity-90">
+					Proceed to checkout
+				</Link>
 
-				<div>
-					<Link
-						href="/"
-						className="mt-4 inline-block text-sm font-medium text-primary hover:underline">
-						Continue Shopping
-					</Link>
-				</div>
+				<Link
+					href="/"
+					className="mt-4 block text-sm font-medium text-primary hover:underline">
+					Continue Shopping
+				</Link>
 			</div>
 		</section>
 	);
