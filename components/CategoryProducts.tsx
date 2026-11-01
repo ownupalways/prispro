@@ -1,6 +1,7 @@
 import { connection } from "next/server";
 import ProductGrid from "./ProductGrid";
-import { getProductsByCategory, type Product } from "@/lib/products";
+import type { Product } from "@/lib/products";
+import { getProductsByCategory } from "@/lib/product-queries";
 import { getCurrentTime } from "@/lib/time";
 
 export default async function CategoryProducts({
@@ -11,7 +12,7 @@ export default async function CategoryProducts({
   category: Product["category"];
 }) {
   await connection();
-  const products = getProductsByCategory(category, getCurrentTime());
+  const products = await getProductsByCategory(category, getCurrentTime());
 
   return <ProductGrid title={title} products={products} />;
 }
