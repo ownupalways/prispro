@@ -50,3 +50,10 @@ export async function getProductsByCategory(
   });
   return rows.map(toProduct).filter((product) => isListable(product, now));
 }
+
+export async function getProductsByIds(ids: string[]): Promise<Product[]> {
+  const rows = await prisma.product.findMany({
+    where: { id: { in: ids } },
+  });
+  return rows.map(toProduct);
+}

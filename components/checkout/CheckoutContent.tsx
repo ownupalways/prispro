@@ -1,25 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import { useCart } from "@/components/cart/CartProvider";
-import { getProductById } from "@/lib/products";
+import { useCartLines } from "@/components/cart/useCartLines";
 import { useHydrated } from "@/lib/use-hydrated";
 import CheckoutForm from "./CheckoutForm";
-import OrderSummary, { type SummaryLine } from "./OrderSummary";
+import OrderSummary from "./OrderSummary";
 
 export default function CheckoutContent() {
-  const { items } = useCart();
+  const { lines, loading, failed } = useCartLines();
   const hydrated = useHydrated();
 
-  if (!hydrated) {
+  if (!hydrated || loading) {
     return <div className="shimmer h-64 rounded-lg" />;
   }
 
-  const lines: SummaryLine[] = items.flatMap((item) => {
-    const product = getProductById(item.productId);
-    if (!product) return [];
-    return [{ product, quantity: item.quantity }];
-  });
+  if (failed && lines.length === 0) {
+    return (
+      <div className="rounded-lg border border-border bg-surface p-8 text-center">
+        <p className="text-muted">
+          We couldn&apos;t load your cart. Check your connection and refresh
+          the page.
+        </p>
+      </div>
+    );
+  }
 
   if (lines.length === 0) {
     return (
@@ -27,8 +31,7 @@ export default function CheckoutContent() {
         <p className="mb-4 text-muted">Your cart is empty.</p>
         <Link
           href="/"
-          className="inline-block rounded-md bg-primary px-5 py-2 text-primary-foreground"
-        >
+          className="inline-block rounded-md bg-primary px-5 py-2 text-primary-foreground">
           Continue shopping
         </Link>
       </div>
