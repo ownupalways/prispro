@@ -160,3 +160,7 @@ export function useCart() {
 
   return context;
 }
+
+export function clearCart() {
+  writeCart(EMPTY_CART);
+}

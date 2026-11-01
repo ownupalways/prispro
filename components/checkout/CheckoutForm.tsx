@@ -6,6 +6,7 @@ import {
   type ReactNode,
   type SyntheticEvent,
 } from "react";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/components/cart/CartProvider";
 import { placeOrder } from "@/lib/order-actions";
 import {
@@ -14,7 +15,6 @@ import {
   type DeliveryErrors,
 } from "@/lib/checkout-validation";
 import { NIGERIA_STATES } from "@/lib/nigeria-states";
-import formatPrice from "@/lib/format";
 
 const emptyValues: DeliveryDetails = {
   fullName: "",
@@ -57,14 +57,12 @@ function Field({
 }
 
 export default function CheckoutForm() {
+  const router = useRouter();
   const { items } = useCart();
   const [values, setValues] = useState<DeliveryDetails>(emptyValues);
   const [errors, setErrors] = useState<DeliveryErrors>({});
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState("");
-  const [placed, setPlaced] = useState<{ reference: string; total: number } | null>(
-    null,
-  );
 
   function handleChange(
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -89,31 +87,17 @@ export default function CheckoutForm() {
       const result = await placeOrder({ delivery: values, items });
 
       if (result.ok) {
-        setPlaced({ reference: result.reference, total: result.total });
-      } else {
-        setServerError(result.error);
-        if (result.fieldErrors) setErrors(result.fieldErrors);
+        router.push(`/order/${result.reference}?placed=1`);
+        return;
       }
+
+      setServerError(result.error);
+      if (result.fieldErrors) setErrors(result.fieldErrors);
     } catch {
       setServerError("Something went wrong. Please try again.");
-    } finally {
-      setSubmitting(false);
     }
-  }
 
-  if (placed) {
-    return (
-      <div className="rounded-lg border border-border bg-surface p-6">
-        <h2 className="text-lg font-semibold text-primary">Order placed</h2>
-        <p className="mt-2 text-foreground">
-          Reference: <strong>{placed.reference}</strong>
-        </p>
-        <p className="mt-1 text-muted">Total: {formatPrice(placed.total)}</p>
-        <p className="mt-4 text-sm text-muted">
-          Payment comes in the next step.
-        </p>
-      </div>
-    );
+    setSubmitting(false);
   }
 
   return (
