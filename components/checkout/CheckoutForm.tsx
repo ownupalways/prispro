@@ -1,20 +1,22 @@
 "use client";
 
-import { useState, type ChangeEvent, type SyntheticEvent, type ReactNode } from "react";
+import {
+  useState,
+  type ChangeEvent,
+  type ReactNode,
+  type SyntheticEvent,
+} from "react";
+import { useCart } from "@/components/cart/CartProvider";
+import { placeOrder } from "@/lib/order-actions";
+import {
+  validateDelivery,
+  type DeliveryDetails,
+  type DeliveryErrors,
+} from "@/lib/checkout-validation";
 import { NIGERIA_STATES } from "@/lib/nigeria-states";
+import formatPrice from "@/lib/format";
 
-type FormValues = {
-  fullName: string;
-  phone: string;
-  email: string;
-  address: string;
-  city: string;
-  state: string;
-};
-
-type FormErrors = Partial<Record<keyof FormValues, string>>;
-
-const emptyValues: FormValues = {
+const emptyValues: DeliveryDetails = {
   fullName: "",
   phone: "",
   email: "",
@@ -22,32 +24,6 @@ const emptyValues: FormValues = {
   city: "",
   state: "",
 };
-
-function validate(values: FormValues): FormErrors {
-  const errors: FormErrors = {};
-
-  if (values.fullName.trim().length < 3) {
-    errors.fullName = "Enter your full name.";
-  }
-
-  const phone = values.phone.replace(/\s/g, "");
-  if (!/^(0|\+234)[789][01]\d{8}$/.test(phone)) {
-    errors.phone = "Enter a valid Nigerian phone number.";
-  }
-
-  if (!/^\S+@\S+\.\S+$/.test(values.email.trim())) {
-    errors.email = "Enter a valid email address.";
-  }
-
-  if (values.address.trim().length < 5) {
-    errors.address = "Enter your delivery address.";
-  }
-
-  if (!values.city.trim()) errors.city = "Enter your city or town.";
-  if (!values.state) errors.state = "Choose your state.";
-
-  return errors;
-}
 
 const inputClass =
   "w-full rounded-md border border-border bg-background px-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary";
@@ -65,7 +41,9 @@ function Field({
 }) {
   return (
     <div>
-      <label htmlFor={htmlFor} className="mb-1 block text-sm font-medium text-foreground">
+      <label
+        htmlFor={htmlFor}
+        className="mb-1 block text-sm font-medium text-foreground">
         {label}
       </label>
       {children}
@@ -79,9 +57,14 @@ function Field({
 }
 
 export default function CheckoutForm() {
-  const [values, setValues] = useState<FormValues>(emptyValues);
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [submitted, setSubmitted] = useState(false);
+  const { items } = useCart();
+  const [values, setValues] = useState<DeliveryDetails>(emptyValues);
+  const [errors, setErrors] = useState<DeliveryErrors>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [serverError, setServerError] = useState("");
+  const [placed, setPlaced] = useState<{ reference: string; total: number } | null>(
+    null,
+  );
 
   function handleChange(
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -90,26 +73,54 @@ export default function CheckoutForm() {
     setValues((prev) => ({ ...prev, [name]: value }));
   }
 
-  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
+  async function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (submitting) return;
 
-    const found = validate(values);
+    setServerError("");
+
+    const found = validateDelivery(values);
     setErrors(found);
+    if (Object.keys(found).length > 0) return;
 
-    if (Object.keys(found).length > 0) {
-      setSubmitted(false);
-      return;
+    setSubmitting(true);
+
+    try {
+      const result = await placeOrder({ delivery: values, items });
+
+      if (result.ok) {
+        setPlaced({ reference: result.reference, total: result.total });
+      } else {
+        setServerError(result.error);
+        if (result.fieldErrors) setErrors(result.fieldErrors);
+      }
+    } catch {
+      setServerError("Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
+  }
 
-    setSubmitted(true);
+  if (placed) {
+    return (
+      <div className="rounded-lg border border-border bg-surface p-6">
+        <h2 className="text-lg font-semibold text-primary">Order placed</h2>
+        <p className="mt-2 text-foreground">
+          Reference: <strong>{placed.reference}</strong>
+        </p>
+        <p className="mt-1 text-muted">Total: {formatPrice(placed.total)}</p>
+        <p className="mt-4 text-sm text-muted">
+          Payment comes in the next step.
+        </p>
+      </div>
+    );
   }
 
   return (
     <form
       onSubmit={handleSubmit}
       noValidate
-      className="space-y-4 rounded-lg border border-border bg-surface p-6"
-    >
+      className="space-y-4 rounded-lg border border-border bg-surface p-6">
       <h2 className="text-lg font-semibold text-primary">Delivery details</h2>
 
       <Field label="Full name" htmlFor="fullName" error={errors.fullName}>
@@ -188,8 +199,7 @@ export default function CheckoutForm() {
             value={values.state}
             onChange={handleChange}
             aria-invalid={!!errors.state}
-            className={inputClass}
-          >
+            className={inputClass}>
             <option value="">Select state</option>
             {NIGERIA_STATES.map((s) => (
               <option key={s} value={s}>
@@ -200,18 +210,18 @@ export default function CheckoutForm() {
         </Field>
       </div>
 
-      <button
-        type="submit"
-        className="w-full rounded-md bg-primary px-5 py-3 font-medium text-primary-foreground hover:opacity-90"
-      >
-        Continue
-      </button>
-
-      {submitted && (
-        <p className="text-sm text-muted">
-          Details look good. Placing the order comes in the next step.
+      {serverError && (
+        <p role="alert" className="text-sm text-red-600">
+          {serverError}
         </p>
       )}
+
+      <button
+        type="submit"
+        disabled={submitting}
+        className="w-full rounded-md bg-primary px-5 py-3 font-medium text-primary-foreground hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
+        {submitting ? "Placing order..." : "Place order"}
+      </button>
     </form>
   );
 }
