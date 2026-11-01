@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCartLines } from "@/components/cart/useCartLines";
 import { useHydrated } from "@/lib/use-hydrated";
 import CheckoutForm from "./CheckoutForm";
+import CheckoutSkeleton from "./CheckoutSkeleton";
 import OrderSummary from "./OrderSummary";
 
 export default function CheckoutContent() {
@@ -11,7 +12,7 @@ export default function CheckoutContent() {
   const hydrated = useHydrated();
 
   if (!hydrated || loading) {
-    return <div className="shimmer h-64 rounded-lg" />;
+    return <CheckoutSkeleton />;
   }
 
   if (failed && lines.length === 0) {

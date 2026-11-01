@@ -4,7 +4,7 @@ import  { ProductGridSkeleton }  from "@/components/ProductGrid";
 
 export default function MenPage() {
   return (
-    <Suspense fallback={<ProductGridSkeleton />}>
+    <Suspense fallback={<ProductGridSkeleton title="Men's Collection" />}>
       <CategoryProducts title="Men's Collection" category="Men" />
     </Suspense>
   );

@@ -4,7 +4,7 @@ import { ProductGridSkeleton } from "@/components/ProductGrid";
 
 export default function WomenPage() {
   return (
-    <Suspense fallback={<ProductGridSkeleton />}>
+    <Suspense fallback={<ProductGridSkeleton title="Women's Affairs" />}>
       <CategoryProducts title="Women's Affairs" category="Women" />
     </Suspense>
   );
